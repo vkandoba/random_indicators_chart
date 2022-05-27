@@ -45,15 +45,22 @@ app.layout = html.Div(children=[
     dcc.Graph(
         id='price-graph',
         figure=init_fig
+    ),
+
+    dcc.Interval(
+        id='interval-component',
+        interval=1 * 1000,  # in milliseconds
+        n_intervals=0
     )
 ])
 
 
 @app.callback(
     Output(component_id='price-graph', component_property='figure'),
-    Input(component_id='instrument-selector', component_property='value')
+    [Input(component_id='interval-component', component_property='n_intervals'),
+     Input(component_id='instrument-selector', component_property='value')]
 )
-def update_price_graph(instrument):
+def update_price_graph(iteration_number, instrument):
     values = price_list(instrument)
     fig = create_price_figure(values)
     return fig
