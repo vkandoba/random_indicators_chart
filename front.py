@@ -1,9 +1,18 @@
+from requests import get
 from dash import Dash, html, dcc
 
-instruments = [f'ticker_{i:02d}' for i in range(100)]
+
+def instrument_symbol_list():
+    instruments_response = get("http://127.0.0.1:5000/instrument")
+    if (instruments_response.ok):
+        instruments = instruments_response.json()
+        return [instrument['symbol'] for instrument in instruments]
+
 
 app = Dash(__name__)
 app.title = 'Test. Python'
+
+instruments = instrument_symbol_list()
 
 app.layout = html.Div(children=[
     html.H1(children='Chart'),
