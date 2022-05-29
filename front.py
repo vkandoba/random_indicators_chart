@@ -2,7 +2,8 @@ import pandas as pd
 
 from requests import get
 
-from dash import Dash, html, dcc, Input, Output
+from dash import Dash, html, dcc, Input, Output, State
+from dash_extensions import WebSocket
 import plotly.express as px
 
 
@@ -42,28 +43,66 @@ app.layout = html.Div(children=[
             dcc.Dropdown(instruments, instruments[0], id='instrument-selector', clearable=False)
         ], style={"width": '15%'}),
 
+    dcc.Store(id='price-data-store'),
+
+    dcc.Store(id='instrument-price-data-store'),
+
     dcc.Graph(
         id='price-graph',
         figure=init_fig
     ),
 
-    dcc.Interval(
-        id='interval-component',
-        interval=1 * 1000,  # in milliseconds
-        n_intervals=0
-    )
+    #  WebSocket(id='price-ws', url='ws://127.0.0.1:5000/ws/instrument/price/realtime')
+    WebSocket(id='price-ws', url='ws://127.0.0.1:5000/instrument/price/realtime')
 ])
+
+#  TODO: move to js file
+update_store = '''
+    function(msg, instrument_data, current_data) {
+        console.log('msg: ')
+        console.log(msg)        
+        console.log('instrument_data:')
+        console.log(instrument_data)
+        console.log('current_data: ' + current_data)
+
+        if (!current_data || !msg)
+            return instrument_data || {'symbol': "", 'values': []}
+
+        if (instrument_data && instrument_data.symbol != current_data.symbol)
+            return instrument_data
+                    
+        //const data = JSON.parse(msg.data);  // read the data
+        var new_price = parseInt(msg.data);
+        current_data.values.push(new_price);
+        return current_data; 
+}
+'''
+
+app.clientside_callback(update_store,
+                        Output('price-data-store', 'data'),
+                        [Input("price-ws", "message"), Input('instrument-price-data-store', 'data')],
+                        State('price-data-store', 'data'))
 
 
 @app.callback(
     Output(component_id='price-graph', component_property='figure'),
-    [Input(component_id='interval-component', component_property='n_intervals'),
-     Input(component_id='instrument-selector', component_property='value')]
+    Input(component_id='price-data-store', component_property='data')
 )
-def update_price_graph(iteration_number, instrument):
-    values = price_list(instrument)
-    fig = create_price_figure(values)
+def update_price_graph(data):
+    print(type(data))
+    print(data)
+    fig = create_price_figure(data['values'])
     return fig
+
+
+@app.callback(
+    Output(component_id='instrument-price-data-store', component_property='data'),
+    Input(component_id='instrument-selector', component_property='value')
+)
+def update_price_data(instrument):
+    values = price_list(instrument)
+    return {"symbol": instrument, "values": values}
+
 
 
 if __name__ == '__main__':
