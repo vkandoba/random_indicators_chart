@@ -1,3 +1,4 @@
+import json
 from flask import Flask, jsonify
 from flask_apscheduler import APScheduler
 from flask_sock import Sock
@@ -20,18 +21,15 @@ ws_connections = set()
     max_instances=1
 )
 def generate_price_task():
-    price = instrument_service.generate_next_price()
-    instrument_service.append_price(price)
+    next_prices = instrument_service.generate_next_price()
+    instrument_service.append_price()
     print(f"connections: {len(ws_connections)}")
     for ws_connection in ws_connections:
         try:
-            ws_connection.send(str(price))
+            ws_connection.send(json.dumps(next_prices))
         except ConnectionClosed:
             if ws_connection in ws_connections:
-                print('remove connection from generate price')
                 ws_connections.remove(ws_connection)
-    print(f"generate task: {price}")
-
 
 @app.route('/')
 def main_handler():
@@ -53,7 +51,7 @@ def price_list(symbol):
     return jsonify(prices)
 
 
-@sock.route('ws/instrument/price/realtime')
+@sock.route('/ws/instrument/price/realtime')
 def price_events_realtime(ws_connection):
     print('new ws connection')
     ws_connections.add(ws_connection)
@@ -63,6 +61,7 @@ def price_events_realtime(ws_connection):
         print('remove connection from handler')
         if ws_connection in ws_connections:
             ws_connections.remove(ws_connection)
+
 
 if __name__ == '__main__':
     app.run(debug=False)  # on debug mode start and run scheduler twice

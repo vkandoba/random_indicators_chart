@@ -52,8 +52,7 @@ app.layout = html.Div(children=[
         figure=init_fig
     ),
 
-    #  WebSocket(id='price-ws', url='ws://127.0.0.1:5000/ws/instrument/price/realtime')
-    WebSocket(id='price-ws', url='ws://127.0.0.1:5000/instrument/price/realtime')
+    WebSocket(id='price-ws', url='ws://127.0.0.1:5000/ws/instrument/price/realtime')
 ])
 
 #  TODO: move to js file
@@ -63,7 +62,8 @@ update_store = '''
         console.log(msg)        
         console.log('instrument_data:')
         console.log(instrument_data)
-        console.log('current_data: ' + current_data)
+        console.log('current_data: ')
+        console.log(current_data)        
 
         if (!current_data || !msg)
             return instrument_data || {'symbol': "", 'values': []}
@@ -71,10 +71,10 @@ update_store = '''
         if (instrument_data && instrument_data.symbol != current_data.symbol)
             return instrument_data
                     
-        //const data = JSON.parse(msg.data);  // read the data
-        var new_price = parseInt(msg.data);
+        var price_update = JSON.parse(msg.data);
+        var new_price = price_update[current_data.symbol]
         current_data.values.push(new_price);
-        return current_data; 
+        return current_data;
 }
 '''
 
@@ -89,7 +89,6 @@ app.clientside_callback(update_store,
     Input(component_id='price-data-store', component_property='data')
 )
 def update_price_graph(data):
-    print(type(data))
     print(data)
     fig = create_price_figure(data['values'])
     return fig
@@ -102,7 +101,6 @@ def update_price_graph(data):
 def update_price_data(instrument):
     values = price_list(instrument)
     return {"symbol": instrument, "values": values}
-
 
 
 if __name__ == '__main__':
