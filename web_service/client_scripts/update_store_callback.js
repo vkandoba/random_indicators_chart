@@ -1,4 +1,5 @@
 function(msg, instrument_data, current_data) {
+    console.log(current_data)
 	if (current_data && instrument_data && instrument_data.symbol != current_data.symbol)
 	{
 		console.log('Was called update the data callback by change the instrument symbol. New instrument data:');
@@ -10,7 +11,7 @@ function(msg, instrument_data, current_data) {
 	if (current_data && msg)
 	{
 		console.log('Was called the data callback with new prices. Updates data:');
-		console.log(price_update);
+		console.log(msg);
 		
 		var price_update = JSON.parse(msg.data);
 		var new_price = price_update[current_data.symbol];

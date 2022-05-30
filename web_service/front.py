@@ -58,23 +58,18 @@ app.layout = html.Div(children=[
 
 scripts_dir = Path(__file__).parent / "client_scripts"
 
-update_store = (scripts_dir / "update_store_client_callback.js").read_text()
+update_store_js = (scripts_dir / "update_store_callback.js").read_text()
+update_graph_js = (scripts_dir / "update_price_graph_callback.js").read_text()
 
-app.clientside_callback(update_store,
+app.clientside_callback(update_store_js,
                         Output('price-data-store', 'data'),
-                        [Input("price-ws", "message"), Input('instrument-price-data-store', 'data')],
+                        [Input('price-ws', 'message'), Input('instrument-price-data-store', 'data')],
                         State('price-data-store', 'data'))
 
-
-@app.callback(
-    Output(component_id='price-graph', component_property='figure'),
-    Input(component_id='price-data-store', component_property='data')
-)
-def update_price_graph(data):
-    print(data)
-    fig = create_price_figure(data['values'])
-    return fig
-
+app.clientside_callback(update_graph_js,
+                        Output('price-graph', 'figure'),
+                        Input('price-data-store', 'data'),
+                        State('price-graph', 'figure'))
 
 @app.callback(
     Output(component_id='instrument-price-data-store', component_property='data'),
