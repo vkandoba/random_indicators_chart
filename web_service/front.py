@@ -1,9 +1,10 @@
 import pandas as pd
 
 from requests import get
-
+from pathlib import Path
 from dash import Dash, html, dcc, Input, Output, State
 from dash_extensions import WebSocket
+
 import plotly.express as px
 
 
@@ -55,28 +56,9 @@ app.layout = html.Div(children=[
     WebSocket(id='price-ws', url='ws://127.0.0.1:5000/ws/instrument/price/realtime')
 ])
 
-#  TODO: move to js file
-update_store = '''
-    function(msg, instrument_data, current_data) {
-        console.log('msg: ')
-        console.log(msg)        
-        console.log('instrument_data:')
-        console.log(instrument_data)
-        console.log('current_data: ')
-        console.log(current_data)        
+scripts_dir = Path(__file__).parent / "client_scripts"
 
-        if (!current_data || !msg)
-            return instrument_data || {'symbol': "", 'values': []}
-
-        if (instrument_data && instrument_data.symbol != current_data.symbol)
-            return instrument_data
-                    
-        var price_update = JSON.parse(msg.data);
-        var new_price = price_update[current_data.symbol]
-        current_data.values.push(new_price);
-        return current_data;
-}
-'''
+update_store = (scripts_dir / "update_store_client_callback.js").read_text()
 
 app.clientside_callback(update_store,
                         Output('price-data-store', 'data'),
