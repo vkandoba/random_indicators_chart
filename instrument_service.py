@@ -1,3 +1,4 @@
+from datetime import datetime
 from price_service import PriceService
 from random_price_shift_provider import RandomPriceShiftProvider
 
@@ -15,11 +16,13 @@ price_service = PriceService(shift_provider, base_price, create_instruments(defa
 
 
 def get_prices(name):
-    return price_service.get_prices(name)
+    price_list = price_service.get_prices(name)
+    return {'prices': price_list, 'timestamp': datetime.utcnow().isoformat()}
 
 
 def generate_next_price():
-    return price_service.generate_next_prices()
+    next_prices = price_service.generate_next_prices()
+    return {'new_prices': next_prices, 'timestamp': datetime.utcnow().isoformat()}
 
 
 def append_price():

@@ -1,8 +1,18 @@
 function(data, figure) {
-	console.log("was called the update graph callback with data")
+	console.log("The update graph callback with data:")
 	console.log(data);
-	
-	figure.data[0].x = Array(data.values.length).fill().map((_, i) => i);
+
+	figure.data[0].x = data.times.map((t, _) =>  datetimeToPlotlyNative(t))
 	figure.data[0].y = data.values;
-	return figure;
+
+	timeline_start = datetimeToPlotlyNative(data.times[0]);
+	timeline_end = datetimeToPlotlyNative(data.times[data.times.length - 1]);
+	figure.layout.xaxis = [timeline_start, timeline_end]
+
+	new_figure = {'data': figure.data, 'layout': figure.layout}
+
+	console.log('New figure object:')
+	console.log(new_figure);		
+
+	return new_figure;
 }
