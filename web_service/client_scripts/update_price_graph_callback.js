@@ -11,7 +11,7 @@ function(data, figure) {
 
 	new_figure = {'data': figure.data, 'layout': figure.layout}
 
-	console.log('New figure object:')
+	console.log("New figure object:")
 	console.log(new_figure);		
 
 	return new_figure;

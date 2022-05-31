@@ -1,7 +1,7 @@
 function(msg, instrument_data, current_data) {
 	if (current_data && instrument_data && instrument_data.symbol != current_data.symbol)
 	{
-		console.log('The data update callback by change the instrument symbol. New instrument data:');
+		console.log("The data update callback by change the instrument symbol. New instrument data:");
 		console.log(instrument_data);
 
 		return instrument_data;
@@ -9,7 +9,7 @@ function(msg, instrument_data, current_data) {
 				
 	if (current_data && msg)
 	{
-		console.log('The data update callback with new prices. Updates:');
+		console.log("The data update callback with new prices. Updates:");
 		console.log(msg);
 		
 		var update_date = JSON.parse(msg.data);
@@ -26,7 +26,7 @@ function(msg, instrument_data, current_data) {
 		return {'values': current_data.values.slice(), 'times': current_data.times.slice()};
 	}
 	
-	console.log('The data update callback with no current price data. Price data from server:');
+	console.log("The data update callback with no current price data. Price data from server:");
 	console.log(instrument_data);
 
 	return instrument_data || {'symbol': "", 'values': [], 'times': []};
