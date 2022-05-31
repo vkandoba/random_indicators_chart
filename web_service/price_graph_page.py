@@ -61,9 +61,12 @@ class PriceGraphPage:
 
     @staticmethod
     def __create_price_figure(price_data):
-        time_df = pd.Series(price_data['values'], index=price_data['times'])
-        time_df.index.name = 'Time UTC +00:00' # TODO: view with client timezone
-        figure = px.line(time_df, x=time_df.index, y=time_df.values)
+        time_df = pd.DataFrame(price_data)
+        time_df['times'].name = 'Time UTC +00:00'
+        figure = px.line(time_df, x='times', y='values', labels={
+                     'times': "Time UTC +00:00",  # TODO: rename when will done view with client timezone
+                     "values": "Price"
+                 })
         return figure
 
     def add_client_callbacks(self, app):

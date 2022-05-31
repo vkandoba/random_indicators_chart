@@ -7,7 +7,7 @@ function(data, figure) {
 
 	timeline_start = datetimeToPlotlyNative(data.times[0]);
 	timeline_end = datetimeToPlotlyNative(data.times[data.times.length - 1]);
-	figure.layout.xaxis = [timeline_start, timeline_end]
+	figure.layout.xaxis.range = [timeline_start, timeline_end]
 
 	new_figure = {'data': figure.data, 'layout': figure.layout}
 
