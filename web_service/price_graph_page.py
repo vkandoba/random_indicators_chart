@@ -1,7 +1,6 @@
 import pandas as pd
 from datetime import datetime
 
-from pathlib import Path
 from requests import get
 
 from dash import html, dcc, Input, Output, State
@@ -11,10 +10,10 @@ import plotly.express as px
 
 
 class PriceGraphPage:
-    def __init__(self, page_config):
-        self.config = page_config
-        self.__base_rest_api_url = f"http://{self.config['endpoint']}/"
-        self.__scripts_dir = Path(__file__).parent / "client_scripts"
+    def __init__(self, scripts_dir, config):
+        self.config = config
+        self.__base_rest_api_url = f"http://{self.config['generate_price_service']['endpoint']}/"
+        self.__scripts_dir = scripts_dir
         self.html_selector_id = 'instrument-selector'
         self.html_price_store_id = 'instrument-price-data-store'
 
@@ -33,16 +32,13 @@ class PriceGraphPage:
 
         return html.Div(children=[
             html.H1(children='Price chart'),
-
             html.Div(children='Select trading instrument:'),
-
             html.Div(
                 [
                     dcc.Dropdown(instruments, instruments[0], id=self.html_selector_id, clearable=False)
                 ], style={"width": '15%'}),
 
             dcc.Store(id='price-data-store'),
-
             dcc.Store(id=self.html_price_store_id),
 
             dcc.Graph(
