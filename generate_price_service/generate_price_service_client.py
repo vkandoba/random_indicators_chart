@@ -5,6 +5,7 @@ class GeneratePriceServiceClient:
     def __init__(self, endpoint):
         self.__base_rest_api_url = f"http://{endpoint}"
         self.__realtime_base_url = f"ws://{endpoint}/ws"
+
         self.price_updates_realtime_url = f"{self.__realtime_base_url}/instrument/price/realtime"
 
     def instruments(self):

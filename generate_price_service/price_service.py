@@ -1,8 +1,9 @@
 class PriceService:
-    def __init__(self, shift_provider, init_price, instrument_list):
+    def __init__(self, instrument_service, shift_provider, init_price):
         self.__shift_provider = shift_provider
-        self.__instrument_to_index_dict = {name: i for i, name in enumerate(instrument_list)}
-        init_prices = [init_price for _ in instrument_list]
+        self.__instrument_names = instrument_service.names()
+        self.__instrument_to_index_dict = {name: i for i, name in enumerate(self.__instrument_names)}
+        init_prices = [init_price for _ in self.__instrument_names]
         self.__price_history = [list(init_prices)]
         self.__last_prices = init_prices
 
