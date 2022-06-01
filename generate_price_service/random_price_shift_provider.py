@@ -1,5 +1,7 @@
 from random import random, seed
 
+import logging
+
 
 class RandomPriceShiftProvider:
     def __init__(self, seed_value):
@@ -7,5 +9,9 @@ class RandomPriceShiftProvider:
 
     @staticmethod
     def generate_movement():
-        movement = -1 if random() < 0.5 else 1
+        rnd_value = random()
+        movement = -1 if rnd_value < 0.5 else 1
+
+        logging.debug(f"random generate {rnd_value}")
+
         return movement

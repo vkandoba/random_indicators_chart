@@ -1,16 +1,26 @@
 import json
+import logging
+from pathlib import Path
 
 from flask import Flask, jsonify
 from flask_apscheduler import APScheduler
 from flask_sock import Sock, ConnectionClosed
-
+from datetime import datetime
 from price_service import PriceService
 from instrument_service import InstrumentService
 from random_price_shift_provider import RandomPriceShiftProvider
 from generate_price_service import GeneratePriceService
 
+service_location = Path(__file__).parent
+logs_location = service_location.parent / "logs" / f"{service_location.name}_{datetime.now().strftime('%H-%M-%S')}.log"
+logging.basicConfig(filename=logs_location,
+                    format="%(levelname)s|%(asctime)s|%(name)s|%(message)s",
+                    datefmt='%%d-%m-%Y %H:%M:%S',
+                    encoding='utf-8',
+                    level=logging.DEBUG)
+
 random_init_state = 42
-default_instrument_count = 100
+default_instrument_count = 2
 init_price = 0
 
 flask_app = Flask(__name__)

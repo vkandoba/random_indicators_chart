@@ -1,3 +1,7 @@
+import json
+import logging
+
+
 class PriceService:
     def __init__(self, instrument_service, shift_provider, init_price):
         self.__shift_provider = shift_provider
@@ -7,12 +11,18 @@ class PriceService:
         self.__price_history = [list(init_prices)]
         self.__last_prices = init_prices
 
+        self.__logger = logging.getLogger(__name__)
+
     def generate_next_prices(self):
+        self.__logger.debug(f"last prices: {json.dumps(self.__last_prices)}")
+
         next_prices = {}
         for name, index in self.__instrument_to_index_dict.items():
             next_diff = self.__shift_provider.generate_movement()
             next_prices[name] = self.__last_prices[index] + next_diff
             self.__last_prices[index] = next_prices[name]
+
+        self.__logger.debug(f"next prices: {json.dumps(next_prices)}")
         return next_prices
 
     def get_prices(self, instrument_name):
