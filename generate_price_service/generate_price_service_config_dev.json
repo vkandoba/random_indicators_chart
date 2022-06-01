@@ -1,0 +1,6 @@
+{
+	"log_level": "DEBUG",
+	"random_init_state": 42,
+	"instrument_count": 3,
+	"init_price": 0
+}

@@ -1,0 +1,6 @@
+{
+	"log_level": "INFO",
+	"random_init_state": 42,
+	"instrument_count": 100,
+	"init_price": 0
+}
