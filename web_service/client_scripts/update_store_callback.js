@@ -9,12 +9,13 @@ function(msg, instrument_data, current_data) {
 				
 	if (current_data && msg)
 	{
+        console.log(Date.now())
 		console.log("The data update callback with new prices. Updates:");
 		console.log(msg);
 		
 		var update_date = JSON.parse(msg.data);
 		
-		var new_price = update_date['new_prices'][current_data.symbol];
+		var new_price = update_date['prices'][current_data.symbol];
 		update_time = update_date['timestamp']
 		
 		console.log("update time: " + update_time)
@@ -22,6 +23,7 @@ function(msg, instrument_data, current_data) {
 		
 		current_data.values.push(new_price);
 		current_data.times.push(update_time);
+        console.log(Date.now())
 
 		return {'values': current_data.values.slice(), 'times': current_data.times.slice()};
 	}

@@ -22,11 +22,11 @@ class PriceGraphPage:
 
         init_instrument_symbol = instruments[0]
 
-        price_response = self.__price_service.price_history(init_instrument_symbol)
-        timeline = self.__create_timeline(price_response)
+        price_history = self.__price_service.price_history(init_instrument_symbol)
+        timeline = [datetime.fromisoformat(item['timestamp']) for item in price_history]
         init_data = {
             'symbol': init_instrument_symbol,
-            'values': price_response['prices'],
+            'values': [item['price'] for item in price_history],
             'times': timeline
         }
         init_fig = self.__create_price_figure(init_data)
@@ -50,24 +50,11 @@ class PriceGraphPage:
         ])
 
     def update_price_data(self, new_instrument_name):
-        prices_response = self.__price_service.price_history(new_instrument_name)
-        timeline = self.__create_timeline(prices_response)
-        return {'symbol': new_instrument_name, 'values': prices_response['prices'], 'times': timeline}
-
-    @staticmethod
-    def __create_timeline(price_response):
-        timestamp = datetime.fromisoformat(price_response['timestamp'])
-        return pd.date_range(end=timestamp, periods=len(price_response['prices']), freq='S');
-
-    @staticmethod
-    def __create_price_figure(price_data):
-        time_df = pd.DataFrame(price_data)
-        time_df['times'].name = 'Time UTC +00:00'
-        figure = px.line(time_df, x='times', y='values', labels={
-                     'times': "Time UTC +00:00",  # TODO: rename when will done view with client timezone
-                     "values": "Price"
-                 })
-        return figure
+        price_history = self.__price_service.price_history(new_instrument_name)
+        timeline = [datetime.fromisoformat(item['timestamp']) for item in price_history]
+        return {'symbol': new_instrument_name,
+                'times': timeline,
+                'values': [item['price'] for item in price_history]}
 
     def add_client_callbacks(self, app):
         update_store_js = self.read_callback_js('update_store_callback.js')
@@ -85,3 +72,12 @@ class PriceGraphPage:
     def read_callback_js(self, file_js):
         return (self.__scripts_dir / file_js).read_text()
 
+    @staticmethod
+    def __create_price_figure(price_data):
+        time_df = pd.DataFrame(price_data)
+        time_df['times'].name = 'Time UTC +00:00'
+        figure = px.line(time_df, x='times', y='values', labels={
+                     'times': "Time UTC +00:00",  # TODO: rename when will done view with client timezone
+                     "values": "Price"
+                 })
+        return figure

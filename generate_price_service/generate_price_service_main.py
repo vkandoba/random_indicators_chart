@@ -14,10 +14,10 @@ from generate_price_service import GeneratePriceService
 
 
 def create_flask_app():
-    ws_connections = set()
-
     flask_app = Flask(__name__)
+
     ws_listener = Sock(flask_app)
+    ws_connections = set()
 
     scheduler = APScheduler()
     scheduler.init_app(flask_app)
@@ -67,9 +67,11 @@ def create_flask_app():
     )
     def generate_price_task():
         next_prices = generate_price_service.prices_update()
+        msg = json.dumps(next_prices)
         for ws_connection in ws_connections:
             try:
-                ws_connection.send(json.dumps(next_prices))
+                logging.debug(f'send to {ws_connection}')
+                ws_connection.send(msg)
             except ConnectionClosed:
                 if ws_connection in ws_connections:
                     ws_connections.remove(ws_connection)

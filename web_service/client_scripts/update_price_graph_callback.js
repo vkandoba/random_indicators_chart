@@ -1,6 +1,7 @@
 function(data, figure) {
 	console.log("The update graph callback with data:")
 	console.log(data);
+    console.log(Date.now())
 
 	figure.data[0].x = data.times.map((t, _) =>  datetimeToPlotlyNative(t))
 	figure.data[0].y = data.values;
@@ -12,7 +13,9 @@ function(data, figure) {
 	new_figure = {'data': figure.data, 'layout': figure.layout}
 
 	console.log("New figure object:")
-	console.log(new_figure);		
 
+// TODO: use extendData
+//    update_data = {'times': [[timeline[timeline.length-1]]], 'values': [[data.values[data.values.length-1]]]}
+    console.log(new_figure)
 	return new_figure;
 }
