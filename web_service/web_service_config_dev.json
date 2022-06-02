@@ -1,8 +1,6 @@
 {
-	"scripts_location": "client_scripts",
 	"generate_price_service":
 	{
 		"endpoint": "127.0.0.1:5000"
-	},
-	"debug": true
+	}
 }

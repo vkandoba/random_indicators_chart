@@ -1,12 +1,12 @@
 import pandas as pd
-from datetime import datetime, timedelta
+from datetime import datetime
 
 from dash import html, dcc, Input, Output, State
 from dash_extensions import WebSocket
 
 import plotly.express as px
 
-from generate_price_service.generate_price_service_client import GeneratePriceServiceClient
+from generate_price_service_client import GeneratePriceServiceClient
 
 
 class PriceGraphPage:
