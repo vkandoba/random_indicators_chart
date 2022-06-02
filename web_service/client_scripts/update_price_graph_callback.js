@@ -1,4 +1,4 @@
-function(update_data) {
+function update_price_graph_callback(update_data) {
 	console.log("The update graph callback with data:")
 	console.log(update_data);
     if (update_data && update_data['timestamp'] && update_data['new_price'])

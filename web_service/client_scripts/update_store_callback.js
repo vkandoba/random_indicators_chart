@@ -1,4 +1,4 @@
-function(msg, instrument_name) {
+function update_store_callback(msg, instrument_name) {
     console.log("-----------------------------------")
     console.log("The data update callback with new prices. Updates:");
     console.log(msg);
