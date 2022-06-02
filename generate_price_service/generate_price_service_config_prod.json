@@ -1,5 +1,8 @@
 {
-	"log_level": "INFO",
+	"endpoint": {
+		"host": "127.0.0.1",
+		"port": 7001
+	},
 	"random_init_state": 42,
 	"instrument_count": 100,
 	"init_price": 0

@@ -1,5 +1,8 @@
 {
-	"log_level": "DEBUG",
+	"endpoint": {
+		"host": "127.0.0.1",
+		"port": 5000
+	},
 	"random_init_state": 42,
 	"instrument_count": 3,
 	"init_price": 0
