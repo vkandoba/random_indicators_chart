@@ -1,35 +1,23 @@
-function(msg, instrument_data, current_data) {
-	if (current_data && instrument_data && instrument_data.symbol != current_data.symbol)
-	{
-		console.log("The data update callback by change the instrument symbol. New instrument data:");
-		console.log(instrument_data);
+function(msg, instrument_name) {
+    console.log("-----------------------------------")
+    console.log("The data update callback with new prices. Updates:");
+    console.log(msg);
+    if (msg)
+    {
+        var update_data = JSON.parse(msg.data);
 
-		return instrument_data;
-	}
-				
-	if (current_data && msg)
-	{
-        console.log(Date.now())
-		console.log("The data update callback with new prices. Updates:");
-		console.log(msg);
-		
-		var update_date = JSON.parse(msg.data);
-		
-		var new_price = update_date['prices'][current_data.symbol];
-		update_time = update_date['timestamp']
-		
-		console.log("update time: " + update_time)
-		console.log("new price: " + new_price)
-		
-		current_data.values.push(new_price);
-		current_data.times.push(update_time);
-        console.log(Date.now())
+        console.log(instrument_name);
+        var new_price = update_data['prices'][instrument_name];
+        update_time = update_data['timestamp']
 
-		return {'values': current_data.values.slice(), 'times': current_data.times.slice()};
-	}
-	
-	console.log("The data update callback with no current price data. Price data from server:");
-	console.log(instrument_data);
+        console.log("update time: " + update_time)
+        console.log("new price: " + new_price)
 
-	return instrument_data || {'symbol': "", 'values': [], 'times': []};
+        return {'new_price': new_price, 'timestamp': update_time};
+    }
+    else
+    {
+        console.warn("The update message is empty")
+        return {}
+    }
 }

@@ -1,5 +1,5 @@
 import pandas as pd
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from dash import html, dcc, Input, Output, State
 from dash_extensions import WebSocket
@@ -21,15 +21,7 @@ class PriceGraphPage:
         instruments = self.__price_service.instruments()
 
         init_instrument_symbol = instruments[0]
-
-        price_history = self.__price_service.price_history(init_instrument_symbol)
-        timeline = [datetime.fromisoformat(item['timestamp']) for item in price_history]
-        init_data = {
-            'symbol': init_instrument_symbol,
-            'values': [item['price'] for item in price_history],
-            'times': timeline
-        }
-        init_fig = self.__create_price_figure(init_data)
+        init_fig = self.update_price_data(init_instrument_symbol)
 
         return html.Div(children=[
             html.H1(children='Price chart'),
@@ -39,7 +31,7 @@ class PriceGraphPage:
                     dcc.Dropdown(instruments, instruments[0], id=self.html_selector_id, clearable=False)
                 ], style={"width": '15%'}),
 
-            dcc.Store(id='price-data-store'),
+            dcc.Store(id='price-update-store'),
             dcc.Store(id=self.html_price_store_id),
 
             dcc.Graph(
@@ -52,22 +44,21 @@ class PriceGraphPage:
     def update_price_data(self, new_instrument_name):
         price_history = self.__price_service.price_history(new_instrument_name)
         timeline = [datetime.fromisoformat(item['timestamp']) for item in price_history]
-        return {'symbol': new_instrument_name,
-                'times': timeline,
-                'values': [item['price'] for item in price_history]}
+        return self.__create_price_figure({'symbol': new_instrument_name,
+                                           'times': timeline,
+                                           'values': [item['price'] for item in price_history]})
 
     def add_client_callbacks(self, app):
         update_store_js = self.read_callback_js('update_store_callback.js')
         app.clientside_callback(update_store_js,
-                                Output('price-data-store', 'data'),
-                                [Input('price-ws', 'message'), Input('instrument-price-data-store', 'data')],
-                                State('price-data-store', 'data'))
+                                Output('price-update-store', 'data'),
+                                Input('price-ws', 'message'),
+                                State(self.html_selector_id, 'value'))
 
         update_graph_js = self.read_callback_js("update_price_graph_callback.js")
         app.clientside_callback(update_graph_js,
-                               Output('price-graph', 'figure'),
-                               Input('price-data-store', 'data'),
-                               State('price-graph', 'figure'))
+                                Output('price-graph', 'extendData'),
+                                Input('price-update-store', 'data'))
 
     def read_callback_js(self, file_js):
         return (self.__scripts_dir / file_js).read_text()

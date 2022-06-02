@@ -21,7 +21,7 @@ app.layout = price_graph_page.render_page()
 
 # TODO: move to the page class, may be a register method instead the callback decorator
 @app.callback(
-    Output(component_id=price_graph_page.html_price_store_id, component_property='data'),
+    Output(component_id='price-graph', component_property='figure'),
     Input(component_id=price_graph_page.html_selector_id, component_property='value'))
 def update_price_data_server_callback(new_instrument):
     return price_graph_page.update_price_data(new_instrument)
