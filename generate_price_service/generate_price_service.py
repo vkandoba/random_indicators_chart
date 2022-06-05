@@ -17,7 +17,7 @@ class GeneratePriceService:
 
         self.__logger = logging.getLogger(__name__)
 
-    def prices_history(self, instrument_name):
+    def prices_history(self, instrument_name: str) -> [dict]:
         history = self.__price_service.price_history(instrument_name)
         self.__logger.info(f"prices_history: {json.dumps(history)}")
         return history
@@ -33,7 +33,7 @@ class GeneratePriceService:
 
             await asyncio.sleep(self.__update_interval)
 
-    def instruments(self):
+    def instruments(self) -> [dict]:
         # TODO: add updateInterval and initTimestamp to response
         instruments = [{'symbol': name} for name in self.__instrument_service.names()]
         self.__logger.info(f"instruments: {json.dumps(instruments)}")

@@ -26,7 +26,7 @@ def create_dash_app(server=None):
     return app
 
 
-def create_server():
+def create_server() -> Flask:
     flask_app = Flask(__name__)
     create_dash_app(flask_app)
     return flask_app

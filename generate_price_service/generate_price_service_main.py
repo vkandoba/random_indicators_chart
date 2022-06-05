@@ -8,6 +8,7 @@ import json
 import logging
 
 import uvicorn
+from fastapi import FastAPI
 
 from price_service import PriceService
 from instrument_service import InstrumentService
@@ -16,11 +17,11 @@ from generate_price_service import GeneratePriceService
 from generate_price_service_api import GeneratePriceServiceApi
 
 
-def load_config(env, location):
+def load_config(env: str, location: str) -> dict:
     return json.loads((location / f"generate_price_service_config_{env}.json").read_text())
 
 
-def configure_logger(env, location):
+def configure_logger(env: str, location: str) -> None:
     logs_filename = f"{location.name}_{datetime.now().strftime('%%d-%m-%Y-%H-%M-%S')}.log"
     logs_location = location.parent / "logs" / logs_filename
     log_level_name = "INFO" if env == 'prod' else "DEBUG"
@@ -31,7 +32,7 @@ def configure_logger(env, location):
                         level=logging.getLevelName(log_level_name))
 
 
-def create_service_api(main_event_loop, config) -> GeneratePriceServiceApi:
+def create_service_api(main_event_loop, config: dict) -> GeneratePriceServiceApi:
     shift_provider = RandomPriceShiftProvider(config['random_init_state'])
     instrument_service = InstrumentService(config['instrument_count'])
     price_service = PriceService(instrument_service, shift_provider, config['init_price'])
@@ -39,7 +40,7 @@ def create_service_api(main_event_loop, config) -> GeneratePriceServiceApi:
     return GeneratePriceServiceApi(main_event_loop, generate_price_service)
 
 
-def create_server(main_event_loop, application, endpoint) -> uvicorn.Server:
+def create_server(main_event_loop, application: FastAPI, endpoint: dict) -> uvicorn.Server:
     return uvicorn.Server(config=(uvicorn.Config(app=application,
                                                  loop=main_event_loop,
                                                  host=endpoint['host'],
