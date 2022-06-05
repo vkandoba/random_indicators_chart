@@ -13,13 +13,11 @@ class PriceGraphPage:
     def __init__(self, dash_app, config):
         self.config = config
         self.__price_service = GeneratePriceServiceClient(self.config['generate_price_service']['endpoint'])
-        self.html_selector_id = 'instrument-selector'
-        self.html_price_store_id = 'instrument-price-data-store'
         self.__register_client_callbacks(dash_app)
 
         @dash_app.callback(
             Output(component_id='price-graph', component_property='figure'),
-            Input(component_id=self.html_selector_id, component_property='value'))
+            Input(component_id='instrument-selector', component_property='value'))
         def update_price_data_server_callback(new_instrument):
             return self.__update_price_data(new_instrument)
 
@@ -34,11 +32,10 @@ class PriceGraphPage:
             html.Div(children='Select trading instrument:'),
             html.Div(
                 [
-                    dcc.Dropdown(instruments, instruments[0], id=self.html_selector_id, clearable=False)
+                    dcc.Dropdown(instruments, instruments[0], id='instrument-selector', clearable=False)
                 ], style={"width": '15%'}),
 
             dcc.Store(id='price-update-store'),
-            dcc.Store(id=self.html_price_store_id),
 
             dcc.Graph(
                 id='price-graph',
