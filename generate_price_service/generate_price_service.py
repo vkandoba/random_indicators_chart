@@ -1,10 +1,19 @@
+import asyncio
 import json
 import logging
 
+from instrument_service import InstrumentService
+from price_service import PriceService
+
+
 class GeneratePriceService:
-    def __init__(self, price_service, instrument_service):
+    def __init__(self,
+                 price_service: PriceService,
+                 instrument_service: InstrumentService,
+                 update_interval: int):
         self.__price_service = price_service
         self.__instrument_service = instrument_service
+        self.__update_interval = update_interval
 
         self.__logger = logging.getLogger(__name__)
 
@@ -13,14 +22,16 @@ class GeneratePriceService:
         self.__logger.info(f"prices_history: {json.dumps(history)}")
         return history
 
-    def prices_update(self):
-        next_prices = self.__price_service.generate_next_prices()
-        self.__price_service.add_prices(next_prices)
-        update = self.__price_service.last_prices()
+    async def prices_updates(self) -> [dict]:
+        while True:
+            next_prices = self.__price_service.generate_next_prices()
+            self.__price_service.add_prices(next_prices)
+            update = self.__price_service.last_prices()
+            self.__logger.info(f"prices_update: {json.dumps(update)}")
 
-        self.__logger.info(f"prices_update: {json.dumps(update)}")
+            yield update
 
-        return update
+            await asyncio.sleep(self.__update_interval)
 
     def instruments(self):
         # TODO: add updateInterval and initTimestamp to response

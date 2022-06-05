@@ -4,6 +4,7 @@
 		"port": 5000
 	},
 	"random_init_state": 42,
+	"update_interval": 1,
 	"instrument_count": 3,
 	"init_price": 0
 }
