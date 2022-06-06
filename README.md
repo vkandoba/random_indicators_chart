@@ -31,5 +31,30 @@ movement = -1 if random() < 0.5 else 1
 - [generate_price_service.py](generate_price_service/generate_price_service.py) - сервис и генерация обновлений цены
 - [price_service.py](generate_price_service/price_service.py) - создает и накатывает обновления, сохраняет историю цен в памяти
 - [instrument_service.py](generate_price_service/instrument_service.py) - создает торговые инструменты
- 
 
+## Конфигурация
+### Dev
+- [generate_price_service_config_dev.json](generate_price_service/generate_price_service_config_dev.json)
+- [web_service_config_dev.json](web_service/web_service_config_dev.json)
+### Prod
+- [generate_price_service_config_prod.json](generate_price_service/generate_price_service_config_prod.json)
+- [web_service_config_prod.json](web_service/web_service_config_prod.json)
+## Установка и запуск
+```
+pip install -r requirements.txt
+```
+Дополнительных зависимостей или окружения нет
+### Windows
+cmd
+```
+generate_price_service/dev_start.bat
+web_service/dev_start.bat
+```
+### Linux
+bash
+```
+export SERVER_ENV=dev
+python generate_price_service/generate_price_service_main.py
+export FLASK_ENV=dev
+python web_service/web_service_main.py
+```
