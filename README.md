@@ -16,5 +16,11 @@ movement = -1 if random() < 0.5 else 1
 - График цены от начального момента 
 
 ## Общая схема
-![image](https://user-images.githubusercontent.com/8759658/172070400-2e36bee4-e37c-495b-80ce-80171e1db8e7.png)
+![Untitled Diagram drawio (1)](https://user-images.githubusercontent.com/8759658/172102265-a1c735dc-50f3-4eef-912b-c083f7d54768.png)
+
+## Веб-сервис
+- [web_service_main.py](web_service/web_service_main.py) - точка входа и инициализация приложения
+- [price_graph_page.py](web_service/price_graph_page.py) - основная страница с графиком, компоненты Dash и callback, который обновляет базовый график, когда пользователь меняет инструмент
+- [update_store_callback.js](web_service/client_scripts/update_store_callback.js) - клиентский callback, который принимает сообщения и сохраняет новые цены
+- [update_price_graph_callback.js](web_service/client_scripts/update_store_callback.js) - клиентский callback, который обновляет график
 
