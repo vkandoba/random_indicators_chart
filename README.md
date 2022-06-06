@@ -44,17 +44,15 @@ movement = -1 if random() < 0.5 else 1
 pip install -r requirements.txt
 ```
 Дополнительных зависимостей или окружения нет
-### Windows
-cmd
-```
-generate_price_service/dev_start.bat
-web_service/dev_start.bat
-```
-### Linux
-bash
+### Bash
 ```
 export SERVER_ENV=dev
 python generate_price_service/generate_price_service_main.py
 export FLASK_ENV=dev
 python web_service/web_service_main.py
+```
+### Cmd
+```
+generate_price_service/dev_start.bat
+web_service/dev_start.bat
 ```
