@@ -27,7 +27,7 @@ movement = -1 if random() < 0.5 else 1
 ## Сервис данных
 - [generate_price_service_main.py](generate_price_service/generate_price_service_main.py) - точка входа приложения, запускает сервер
 Получает event loop и при инициализации передает его серверу, чтобы независимо отправлять сообщения в web socket  
-- [generate_price_service_api.py](generate_price_service/generate_price_service_api.py) - внешний API сервиса и отправка сообщений с обновлениями цены
+- [generate_price_service_api.py](generate_price_service/generate_price_service_api.py) - внешний API и отправка сообщений с обновлениями цены
 - [generate_price_service.py](generate_price_service/generate_price_service.py) - сервис и генерация обновлений цены
 - [price_service.py](generate_price_service/price_service.py) - создает и накатывает обновления, сохраняет историю цен в памяти
 - [instrument_service.py](generate_price_service/instrument_service.py) - создает торговые инструменты
