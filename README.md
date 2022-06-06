@@ -20,7 +20,16 @@ movement = -1 if random() < 0.5 else 1
 
 ## Веб-сервис
 - [web_service_main.py](web_service/web_service_main.py) - точка входа и инициализация приложения
-- [price_graph_page.py](web_service/price_graph_page.py) - основная страница с графиком, компоненты Dash и базовый график
-- [update_store_callback.js](web_service/client_scripts/update_store_callback.js) - клиентский callback, который принимает сообщения и сохраняет новые цены
+- [price_graph_page.py](web_service/price_graph_page.py) - основная страница, компоненты Dash и базовый график
+- [update_store_callback.js](web_service/client_scripts/update_store_callback.js) - клиентский callback, принимает сообщения и сохраняет новые цены
 - [update_price_graph_callback.js](web_service/client_scripts/update_store_callback.js) - клиентский callback, который обновляет график
+
+## Сервис данных
+- [generate_price_service_main.py](generate_price_service/generate_price_service_main.py) - точка входа приложения, запускает сервер
+Получает event loop и при инициализации передает его серверу, чтобы независимо отправлять сообщения в web socket  
+- [generate_price_service_api.py](generate_price_service/generate_price_service_api.py) - внешний API сервиса и отправка сообщений с обновлениями цены
+- [generate_price_service.py](generate_price_service/generate_price_service.py) - сервис и генерация обновлений цены
+- [price_service.py](generate_price_service/price_service.py) - создает и накатывает обновления, сохраняет историю цен в памяти
+- [instrument_service.py](generate_price_service/instrument_service.py) - создает торговые инструменты
+ 
 
