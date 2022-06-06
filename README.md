@@ -20,7 +20,7 @@ movement = -1 if random() < 0.5 else 1
 
 ## Веб-сервис
 - [web_service_main.py](web_service/web_service_main.py) - точка входа и инициализация приложения
-- [price_graph_page.py](web_service/price_graph_page.py) - основная страница с графиком, компоненты Dash и callback, который обновляет базовый график, когда пользователь меняет инструмент
+- [price_graph_page.py](web_service/price_graph_page.py) - основная страница с графиком, компоненты Dash и базовый график
 - [update_store_callback.js](web_service/client_scripts/update_store_callback.js) - клиентский callback, который принимает сообщения и сохраняет новые цены
 - [update_price_graph_callback.js](web_service/client_scripts/update_store_callback.js) - клиентский callback, который обновляет график
 
